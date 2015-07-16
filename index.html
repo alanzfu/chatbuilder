@@ -1,0 +1,158 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Chatbuilder</title>
+    <script src="http://chatbuilder.hackreactor.com/ChatBuilder.js"></script>
+  </head>
+  <body>
+
+    <script>
+      /*
+       *  Nice, you found the HTML source code for ChatBuilder! This document kicks everything off when you load it
+       *  in your browser, and is a starting point for the whole app. It's pretty incomplete though--you should
+       *  make your own version of it that works better!
+       *
+       *  You can't edit the code here until it's in a file on your hard drive, so copy this whole page of source
+       *  code and paste it into a plain text editor like Sublime Text 2 (http://www.sublimetext.com/). Save it as
+       *  a `.html` file, and open that file with Google Chrome. You can now edit it however you like, and refresh
+       *  the page to see your modifications take effect on how the application runs.
+       *
+       *  Fair warning: one or more of the steps ahead could require a good amount of research to understand all
+       *  the terms and technologies mentioned. Googling words you haven't heard before is a great idea. Just be
+       *  careful not to spend too long in 'research mode' without making any forward progress on your real goal of
+       *  completing the app!
+       *
+       *  When you've got this code saved as a local file, uncomment the line of JavaScript code below and open
+       *  the new file in Google Chrome. Your next instructions will be waiting for you in the JavaScript console.
+       *  If you already know the Chrome JS development tools pretty well, feel free to skip this opening tutorial
+       *  by calling the `.start()` function on `Chat.guide` instead of `.intro()`
+       *
+       *  NOTE: Please do not publish or share any of the code associated with this challenge. We've worked really
+       *  hard to build this material and publishing solutions diminishes its effectiveness.
+       */
+
+
+      //When send button is clicked
+        //Apply the box's innerText to a local variable
+        //Send the local var
+        //Clear the innerText
+        //Display the new
+
+//TODO: Lots of repeat items every time, either:
+  //don't give me the repeat items
+  //filter repeated items
+//
+
+
+
+
+delete Chat.display;
+delete Chat.fetch;
+delete Chat.send;
+
+//Display Function
+Chat.display = function(string){
+  $("#ul").prepend("<li>" + string + "</li>");
+  //console.log("i was called");
+};
+
+var objectIDArray = [];
+
+//function that true/false if the objectID has already been posted
+var checkIfPosted = function(string){
+  var holder = string;
+  //console.log(string);
+  for(i=0; i<objectIDArray.length;i++){
+    //console.log(objectIDArray[i]);
+    if(holder == objectIDArray[i]){return true}
+    
+    
+  }
+  
+  return false;
+};
+
+
+
+//if fetch gets called, the counter goes up, and the next time it's called that's where it will start retrieving data, rather than retrieving the entire thing.
+
+//Fetch Function
+Chat.fetch = function(callback){
+
+  $.get("https://api.parse.com/1/classes/chats",function(data){
+    //holder = console.log(data);
+
+    var arrayObj = data.results;
+
+    //for every item in arrayObj, 
+    arrayObj.forEach(function(obj){
+      var bool = checkIfPosted(obj.objectId);
+      //bool should be false, AKA it has not bene posted before
+      //if it is false, then i need to append it, and post it
+
+      //if bool is true...then it HAS been posted before, and i should not post it.
+
+      //console.log(bool);
+      if(!bool){
+        objectIDArray.push(obj.objectId);
+        //console.log(objectIDArray);
+        display(obj.text);
+      }
+
+        
+    });
+
+  })
+};
+
+//only want to fetch anything I havnet fetched already....
+
+
+//Send Function
+Chat.send = function (string){
+  var json = JSON.stringify({text: string});
+  $.post("https://api.parse.com/1/classes/chats", json);
+};
+
+
+
+//Function that sends to the cloud
+$(document).ready(function(){
+  $(".send").click(function(){
+    chat = $(".draft").val();
+    send(chat);
+    //isplay(chat);
+    console.log($(".draft").val());
+    $(".draft").val('');
+  });
+});
+
+
+/* this works, but i need it to only fetch new messages*/
+$(document).ready(function(){
+  setInterval(function(){
+    Chat.fetch(function(text){
+      display(text);
+    })
+    }
+  , 1000)
+    });
+
+
+
+    </script>
+
+    <h2>Twatter</h2>
+
+    <input class="draft" type="text"/> <button class="send" type = "submit">Send</button>
+
+    
+
+    <ul class="messages">
+      <!-- once you save this code to a local `.html` file, you can delete these 3 fake, hard-coded li elements -->
+    </ul>
+
+  </body>
+</html>
