@@ -7,6 +7,7 @@ the new ones.
 I've changed the code such that only the new posts are posted.
 
 TODO: 
+
 1. Filter out the RoboChat so I can see meaningfull messages. (If I leave Borken Chat on in the background,
 I should be able to see anyone who attempted to make the project (and succeeded)).
 
