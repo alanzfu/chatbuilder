@@ -85,6 +85,7 @@ Chat.fetch = function(callback){
     //holder = console.log(data);
 
     var arrayObj = data.results;
+    //console.log(arrayObj);
 
     //for every item in arrayObj, 
     arrayObj.forEach(function(obj){
@@ -96,9 +97,13 @@ Chat.fetch = function(callback){
 
       //console.log(bool);
       if(!bool){
-        objectIDArray.push(obj.objectId);
-        //console.log(objectIDArray);
-        display(obj.text);
+        if(obj.username!= "RoboChat"){
+          objectIDArray.push(obj.objectId);
+          //console.log(objectIDArray);
+          //console.log(obj.username);
+          display(obj.text);
+        }
+        
       }
 
         
@@ -137,7 +142,7 @@ $(document).ready(function(){
       display(text);
     })
     }
-  , 1000)
+  , 5000)
     });
 
 
