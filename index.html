@@ -112,9 +112,6 @@ Chat.fetch = function(callback){
   })
 };
 
-//only want to fetch anything I havnet fetched already....
-
-
 //Send Function
 Chat.send = function (string){
   var json = JSON.stringify({text: string});
@@ -123,7 +120,7 @@ Chat.send = function (string){
 
 
 
-//Function that sends to the cloud
+//Function that sends to the cloud, at the click. click passes in callback not invoked function
 $(document).ready(function(){
   $(".send").click(function(){
     chat = $(".draft").val();
