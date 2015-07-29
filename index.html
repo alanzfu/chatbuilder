@@ -3,6 +3,8 @@
 <html>
   <head>
     <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="bootstrap/bootstrap.css"/>
+    <link rel="stylesheet" type="text/css" href="stylesheet.css"/>
     <title>Chatbuilder</title>
     <script src="http://chatbuilder.hackreactor.com/ChatBuilder.js"></script>
   </head>
@@ -46,15 +48,20 @@
 //
 
 
+var hidden = false;
 
-
-delete Chat.display;
+delete display;
 delete Chat.fetch;
 delete Chat.send;
 
 //Display Function
 Chat.display = function(string){
-  $("#ul").prepend("<li>" + string + "</li>");
+  $("ul").prepend("<li>" + string + "</li>");
+  //console.log(hidden);
+  if(hidden && string.slice(8,16)== "RoboChat"){
+    //console.log('trying to hide')
+    $('li').first().hide();
+  }
   //console.log("i was called");
 };
 
@@ -67,10 +74,10 @@ var checkIfPosted = function(string){
   for(i=0; i<objectIDArray.length;i++){
     //console.log(objectIDArray[i]);
     if(holder == objectIDArray[i]){return true}
-    
-    
+
+
   }
-  
+
   return false;
 };
 
@@ -85,9 +92,10 @@ Chat.fetch = function(callback){
     //holder = console.log(data);
 
     var arrayObj = data.results;
+    //console.log(data);
     //console.log(arrayObj);
 
-    //for every item in arrayObj, 
+    //for every item in arrayObj,
     arrayObj.forEach(function(obj){
       var bool = checkIfPosted(obj.objectId);
       //bool should be false, AKA it has not bene posted before
@@ -97,16 +105,20 @@ Chat.fetch = function(callback){
 
       //console.log(bool);
       if(!bool){
-        if(obj.username!= "RoboChat"){
           objectIDArray.push(obj.objectId);
-          //console.log(objectIDArray);
-          //console.log(obj.username);
-          display(obj.text);
+        if(obj.username== "RoboChat") {
+          Chat.display(obj.updatedAt.slice(11,16)+" - "+obj.text)
         }
-        
+
+        else{
+          Chat.display(obj.updatedAt.slice(11,16)+" - "+obj.text);
+        }
+
+
+
       }
 
-        
+
     });
 
   })
@@ -120,13 +132,14 @@ Chat.send = function (string){
 
 
 
+
 //Function that sends to the cloud, at the click. click passes in callback not invoked function
 $(document).ready(function(){
   $(".send").click(function(){
     chat = $(".draft").val();
     send(chat);
     //isplay(chat);
-    console.log($(".draft").val());
+    //console.log($(".draft").val());
     $(".draft").val('');
   });
 });
@@ -135,26 +148,97 @@ $(document).ready(function(){
 /* this works, but i need it to only fetch new messages*/
 $(document).ready(function(){
   setInterval(function(){
+    //toggleRobo();
     Chat.fetch(function(text){
-      display(text);
+      Chat.display(text);
     })
     }
-  , 5000)
+  , 2000)
     });
 
+$(document).ready(function(){
+  $('input').click(function(){
+    $(this).rows="10";
+    //console.log("you clicked")
+  })
+})
+
+var toggleRobo = function(){
+  $('.hide-robo').click(function(){
+      $('li').each(function(){
+        hidden = true;
+        var holder = $(this).text();
+        if(holder.slice(8,16)=="RoboChat"){
+          $(this).hide();
+
+        }
+      })
+  })
+
+  $('.show-robo').click(function(){
+    $('li').each(function(){
+      hidden=false;
+      var holder = $(this).text();
+      if(holder.slice(8,16)=="RoboChat"){
+        $(this).show();
+      }
+    })
+  })
+}
+
+$(document).ready(toggleRobo);
+
+//keyup for twitter counter should only allow a certain amount
+
+</script>
 
 
-    </script>
 
-    <h2>RoboChat Must Die</h2>
 
-    <input class="draft" type="text"/> <button class="send" type = "submit">Send</button>
+    <div class="header">
+      <div class="col-sm-6 left">
+        <img src="logo.png"/>
+      </div>
+      <div class="col-sm-6 right">
+        <h3>RoboChat Must Die</h3>
+      </div>
 
-    
+    </div>
 
-    <ul class="messages">
-      <!-- once you save this code to a local `.html` file, you can delete these 3 fake, hard-coded li elements -->
-    </ul>
+    <div class="container">
+      <div class="row first-row">
+        <div class="col-sm-3 border profile">
+          <div class="row profile-background blue">
+          </div>
+          <div class="row profile-background">
+          </div>
+
+
+        </div>
+        <div class="col-sm-8 border">
+          <input id="textarea" placeholder="How frustrated are you?" class="draft" rows="3" type="text"/>
+          <button class="send" type = "submit">Send</button>
+        <div class="row">
+          <div class="col-sm-6 robo-button-left">
+            <button class="hide-robo">Hide RoboChat</button>
+          </div>
+          <div class="col-sm-6 robo-button-right">
+              <button class="show-robo">Show RoboChat</button>
+          </div>
+
+        </div>
+
+
+
+          <ul class="messages"></ul>
+
+        </div>
+      </div>
+    </div>
+
+
+
+
 
   </body>
 </html>
