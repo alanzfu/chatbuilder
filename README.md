@@ -10,8 +10,9 @@ TODO:
 
 1. ~~Filter out the RoboChat so I can see meaningfull messages. (If I leave Borken Chat on in the background,
 I should be able to see anyone who attempted to make the project (and succeeded)).~~
+1. ~~a) Created show/hide button to show and hide robo-chat.~~
 
 2. Create a new database on Parse for me to use with my friends instead of posting it to the world on
 hack reactor's parse db.
 
-3. Create some nice CSS styling so that it looks a bit better.
+3. ~~Create some nice CSS styling so that it looks a bit better.~~
