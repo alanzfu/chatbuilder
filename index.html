@@ -4,6 +4,8 @@
 <!--
 TODO: Add keyup to input
 TODO: Add parse to script
+
+TODO: Edit send such that it creates a new object with the text as content.
 -->
 <html>
   <head>
@@ -18,12 +20,13 @@ TODO: Add parse to script
 
     <script>
     Parse.initialize("qFmAD2tzjvkYAaU9XqaLOx8NAc7EMwvmqBozHoqb", "T5MnnNzlZy2rSnB1rx6hPF2iwG3nuMrFyneGPFGY");
-
+    /*
     var TestObject = Parse.Object.extend("TestObject");
     var testObject = new TestObject();
     testObject.save({foo: "bar"}).then(function(object) {
       alert("yay! it worked");
     });
+    */
       /*
        *  Nice, you found the HTML source code for ChatBuilder! This document kicks everything off when you load it
        *  in your browser, and is a starting point for the whole app. It's pretty incomplete though--you should
@@ -62,19 +65,25 @@ TODO: Add parse to script
 
 
 var hidden = false;
+var user = prompt("What is your name?");
 
-
+//descending: [10,9,8,7,]
+  //prepend cache: 7,8,9,10
+    //prepend new: 11,7,8,9,10
+    //append new: 7,8,9,10,11
+  //append cache: 10,9,8,7,6
+    //prepend new: 11,10
+    //append new: 7,6,11
 
 //Display Function
+var displayLoad = function(string){
+  $("ul").append("<li>" + string + "</li>");
+};
+
 var display = function(string){
   $("ul").prepend("<li>" + string + "</li>");
-  //console.log(hidden);
-  if(hidden && string.slice(8,16)== "RoboChat"){
-    //console.log('trying to hide')
-    $('li').first().hide();
-  }
-  //console.log("i was called");
-};
+}
+
 
 var objectIDArray = [];
 
@@ -85,60 +94,49 @@ var checkIfPosted = function(string){
   for(i=0; i<objectIDArray.length;i++){
     //console.log(objectIDArray[i]);
     if(holder == objectIDArray[i]){return true}
-
-
   }
-
   return false;
 };
 
 
-
-//if fetch gets called, the counter goes up, and the next time it's called that's where it will start retrieving data, rather than retrieving the entire thing.
-
 //Fetch Function
 var fetch = function(callback){
 
-  $.get("https://api.parse.com/1/classes/chats",function(data){
+  var Chats = Parse.Object.extend("chats");
+  var query = new Parse.Query(Chats);
 
+  query.descending("createdAt");
+  query.limit(25);
+  query.find({
+    success: function(results){
+      //console.log(results);
+      results.forEach(function(obj){
+        var bool = checkIfPosted(obj.id);
+        if(!bool){
+            objectIDArray.push(obj.id);
+            callback(obj.createdAt.toString().slice(16,22)+" "+obj.attributes.username + " - " +obj.attributes.text);
+          }
+        })
+      },
 
-    var arrayObj = data.results;
-    console.log(data);
-    //console.log(arrayObj);
+    error: function(error){
+      console.log(error.message);
+    }
 
-    //for every item in arrayObj,
-    arrayObj.forEach(function(obj){
-      var bool = checkIfPosted(obj.objectId);
-      //bool should be false, AKA it has not bene posted before
-      //if it is false, then i need to append it, and post it
-
-      //if bool is true...then it HAS been posted before, and i should not post it.
-
-      //console.log(bool);
-      if(!bool){
-          objectIDArray.push(obj.objectId);
-        if(obj.username== "RoboChat") {
-          display(obj.updatedAt.slice(11,16)+" - "+obj.text)
-        }
-
-        else{
-          display(obj.updatedAt.slice(11,16)+" - "+obj.text);
-        }
-
-
-
-      }
-
-
-    });
-
-  })
+  });
 };
 
 //Send Function
 var send = function (string){
   var json = JSON.stringify({text: string});
-  $.post("https://api.parse.com/1/classes/chats", json);
+
+  var ChatObject = Parse.Object.extend("chats");
+  var chatObject = new ChatObject();
+  chatObject.save({text:string,username:user});
+
+  fetch(function(text){
+    display(text);
+  })
 };
 
 
@@ -149,8 +147,6 @@ $(document).ready(function(){
   $(".send").click(function(){
     chat = $(".draft").val();
     send(chat);
-    //isplay(chat);
-    //console.log($(".draft").val());
     $(".draft").val('');
   });
 });
@@ -164,7 +160,7 @@ $(document).ready(function(){
       display(text);
     })
     }
-  , 5000)
+  , 3000)
     });
 
 $(document).ready(function(){
@@ -175,6 +171,7 @@ $(document).ready(function(){
 })
 
 var toggleRobo = function(){
+
   $('.hide-robo').click(function(){
       $('li').each(function(){
         hidden = true;
@@ -200,38 +197,64 @@ var toggleRobo = function(){
 
 
 $(document).ready(toggleRobo);
+$(document).ready(fetch(function(text){
+  displayLoad(text);}))
+
 
 
 //keyup for twitter counter should only allow a certain amount
 
 </script>
 
-
-
-
     <div class="header">
       <div class="col-sm-6 left">
         <img src="logo.png"/>
       </div>
       <div class="col-sm-6 right">
-        <h3>RoboChat Must Die</h3>
+        <h3>Twixter</h3>
       </div>
 
     </div>
 
     <div class="container">
       <div class="row first-row">
-        <div class="col-sm-3 border profile">
+        <div class="col-sm-4 border profile gray">
+          <h2>Being Added</h2> <hr>
+          <ol>
+            <li>
+              Word count so that you cannot submit over 140 chars or 0 chars.
+            </li>
+            <li>
+              Responsive design for better mobile experience
+            </li>
+            <li>
+              Load additional items once scrolling to the bottom of the page.
+            </li>
+          </ol>
+
+          <p>
+            Submit feature requests with [feature] tag. <br>
+            Report bugs with [bug] tag.
+          </p>
+        </div>
+
+          <!--
           <div class="row profile-background blue">
           </div>
           <div class="row profile-background">
+          </div> -->
+
+
+
+        <div class="col-sm-7 border">
+          <div class="row input-row">
+            <input id="textarea" placeholder="How frustrated are you?" class="draft" rows="3" type="text"/>
+          </div>
+          <div class="row input-row count-submit">
+            <button class="send" type = "submit">Send</button>
           </div>
 
-
-        </div>
-        <div class="col-sm-8 border">
-          <input id="textarea" placeholder="How frustrated are you?" class="draft" rows="3" type="text"/>
-          <button class="send" type = "submit">Send</button>
+        <!--
         <div class="row">
           <div class="col-sm-6 robo-button-left">
             <button class="hide-robo">Hide RoboChat</button>
@@ -241,10 +264,13 @@ $(document).ready(toggleRobo);
           </div>
 
         </div>
+      -->
 
 
-
+        <div class="row">
           <ul class="messages"></ul>
+        </div>
+
 
         </div>
       </div>
