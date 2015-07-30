@@ -148,6 +148,7 @@ $(document).ready(function(){
     chat = $(".draft").val();
     send(chat);
     $(".draft").val('');
+    $("p.word-count").text('140');
   });
 });
 
@@ -164,7 +165,7 @@ $(document).ready(function(){
     });
 
 $(document).ready(function(){
-  $('input').click(function(){
+  $('textarea').click(function(){
     $(this).rows="10";
     //console.log("you clicked")
   })
@@ -195,10 +196,25 @@ var toggleRobo = function(){
 
 }
 
+var wordCount = function(){
+  $('button').prop('disabled', true);
+  $('textarea').keyup(function(){
+    var inputLength = $('.draft').val().length;
+    wordsLeft = 140-inputLength;
+    $('p.word-count').text(wordsLeft);
+    if(wordsLeft<=0 || wordsLeft==140){$('button').prop('disabled', true);}
+    else $('button').prop('disabled', false);
+
+  })
+
+}
+
 
 $(document).ready(toggleRobo);
 $(document).ready(fetch(function(text){
   displayLoad(text);}))
+
+$(document).ready(wordCount);
 
 
 
@@ -222,13 +238,19 @@ $(document).ready(fetch(function(text){
           <h2>Being Added</h2> <hr>
           <ol>
             <li>
-              Word count so that you cannot submit over 140 chars or 0 chars.
+              <strike>Word count so that you cannot submit over 140 chars or 0 chars.</strike>
             </li>
             <li>
               Responsive design for better mobile experience
             </li>
             <li>
+              <strike>Wrap text without breaks.</strike>
+            </li>
+            <li>
               Load additional items once scrolling to the bottom of the page.
+            </li>
+            <li>
+              Enter to send.
             </li>
           </ol>
 
@@ -248,10 +270,14 @@ $(document).ready(fetch(function(text){
 
         <div class="col-sm-7 border">
           <div class="row input-row">
-            <input id="textarea" placeholder="How frustrated are you?" class="draft" rows="3" type="text"/>
+            <textarea id="textarea" placeholder="What's on your mind?" class="draft" rows="3" type="text"></textarea>
           </div>
           <div class="row input-row count-submit">
+
             <button class="send" type = "submit">Send</button>
+            <p class="word-count">
+              140
+            </p>
           </div>
 
         <!--
