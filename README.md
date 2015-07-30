@@ -16,5 +16,6 @@ I should be able to see anyone who attempted to make the project (and succeeded)
 hack reactor's parse db.~~
 
 3. ~~Create some nice CSS styling so that it looks a bit better.~~
-4. Add word count next to send button. Should not allow user to send if wordcount is more than 140 or if wordcount is 0.
+4. ~~Add word count next to send button. Should not allow user to send if wordcount is more than 140 or if wordcount is 0.~~
+
 
