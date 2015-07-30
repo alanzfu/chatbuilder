@@ -17,5 +17,9 @@ hack reactor's parse db.~~
 
 3. ~~Create some nice CSS styling so that it looks a bit better.~~
 4. ~~Add word count next to send button. Should not allow user to send if wordcount is more than 140 or if wordcount is 0.~~
+5. Hashtags
+    a. Add auto highlighting to anything with a hashtag
+    b. search field to look for hashtags and change list
+    c. 
 
 
